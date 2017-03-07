@@ -64,20 +64,16 @@ fbFnc.api = {
     },
     addPriority: function(inPriority){
         return new Promise((resolve, reject) => {
-            var prioritiesRef = db.ref('/app/priorities');
-            var prioMap = new HashMap();
-            prioritiesRef.on('value', function(snapshot){
-
-                snapshot.forEach(function (data){
-                    var priorityName = data.val().priorityName;
-                    var priorityKey = data.key;
-                    prioMap.set(priorityKey, priorityName);
-                })
-
-                resolve(prioMap);
-            })
-        })
+            var prioritiesRef = db.ref('/app/priorities').push(inPriority);
+            if (prioritiesRef){
+                resolve(prioritiesRef.key);
+            }else{
+                reject('Unable to save priority key')
+            }
+        });
     },
+
+
     getPrioritiesForControl: function(){
         return new Promise((resolve, reject) => {
             var prioritiesRef = db.ref('/app/priorities');
